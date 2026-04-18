@@ -1,0 +1,69 @@
+@abstractmethod (The Rule Maker)
+
+    Where it comes from: You must import this from the abc module.
+
+    How it works: When you put this above a method in a parent class, 
+    you are creating a strict rule. You are telling Python, 
+    "Any child class must write its own working version of this method. 
+    If it doesn't, do not let the program run."
+
+    When to use it: Use it when every child class needs to perform an action,
+     but they all do it differently. For example, every DataProcessor needs an ingest method,
+      but how a NumericProcessor ingests data is totally different from how a TextProcessor does it.
+
+    Parameters: It almost always takes self as its first parameter because it acts on the specific
+     object being used
+========================================================
+@staticmethod (The Independent Helper)
+
+    Where it comes from: Built right into Python (no import needed).
+
+    How it works: A static method is basically a regular function that just happens to live inside a class.
+     It does not take self or cls as a first parameter. 
+     It has no access to the specific object's data or the class blueprint.
+
+    When to use it: Use it when you have a utility or helper function that logically relates to the class,
+     but doesn't actually need to read or change any of the class's data.
+      For example, a MathHacks class might have a static method to check if a number is even
+=================================================
+@classmethod (The Class Manager)
+
+    Where it comes from: Built into Python.
+
+    How it works: Instead of taking self (the specific object), 
+    a class method takes cls (the class blueprint itself) as its first parameter.
+     This means it can modify the class blueprint, which affects all future objects created from it.
+
+    When to use it: It is most commonly used to create alternative ways to build 
+    an object (often called "factory methods"). For example,
+    you might have a normal way to create a User object, but you could write 
+    a class method like User.from_csv_string() that parses a string and returns a new User object.
+=================================================
+2. Method Overriding & Inheritance
+
+Inheritance is when a child class takes on the properties and methods 
+of a parent class. Overriding is when you take a method defined in the 
+parent class (like your abstract methods) and write the specific logic 
+for it in the child class.
+2. Method Overriding (Making it Your Own)
+
+Sometimes, a child class inherits a method from a parent, but the parent's version doesn't quite fit.
+ The child needs to do it differently. 
+ Overriding is when you write a method in the child class with the exact same name as a method in the parent class.
+ Python will then use the child's version and ignore the parent's version.
+
+The Golden Rule of Overriding (Method Signatures):
+When you override a method, you must match the parent's "signature." 
+If the parent expects a string and returns a bool, the child's overriding method must also expect a string and return a bool.
+ If you change the inputs or outputs, you break the system's ability to treat them interchangeably (which ruins Polymorphism).
+
+ That is what super() does. It stands for "superclass" (another word for parent class).
+  It tells Python: "Go up to my parent class, run their version of this method first,
+   and then come back here so I can add my own extra steps."
+=================================================
+3. Polymorphism
+
+This is the big boss of this whole module. "Poly" means many, and "morph" means forms. 
+In programming, polymorphism means you can treat different objects (like a Dog or a Cat) 
+as if they were just generic Animal objects.
+
