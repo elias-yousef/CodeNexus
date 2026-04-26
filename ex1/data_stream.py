@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any
+import typing
 
 
 class DataProcessor(ABC):
@@ -25,6 +26,29 @@ class DataProcessor(ABC):
             current_storage = ""
         return (current_rank, current_storage)
 
+class DataStream():
+    def __init__(self):
+        self.processors :list[DataProcessor] = []
+
+    def register_processor(self, proc: DataProcessor) -> None:
+        for data in proc:
+            self.processors.append(data)
+
+    def process_stream(self, stream: list[typing.Any]) -> None:
+        for data in stream:
+            for proc in self.processors:
+                check = False
+                if data.validate(data):
+                    data.ingest(data)
+                    check = True
+                    break
+                else:
+                    print(f"DataStream error - Can’t process element in stream: {data}")
+
+
+
+    def print_processors_stats(self) -> None:
+        pass
 
 class NumericProcessor(DataProcessor):
     def __init__(self):
@@ -116,40 +140,7 @@ class LogProcessor(DataProcessor):
 
 
 if __name__ == "__main__":
-    print("=== Code Nexus - Data Processor ===\n")
-    first = NumericProcessor()
-    print("Testing Numeric Processor...")
-    numeric_list = [1, 2, 3, 4, 5]
-    text_list = ['Hello', 'Nexus', 'World']
-    processing_data = [{"log_level": "NOTICE", "log_message": "Connection \
-to server"}, {"log_level": "ERROR", "log_\
-message": "Unauthorized access!!"}]
-    print(f"Trying to validate input: {first.validate(42)}")
-    print(f"Trying to validate input: {first.validate('elias')}")
-    try:
-        first.ingest("foo")
-    except TypeError as e:
-        print(e)
-    print(f"Processing data: {numeric_list}")
-    print("Extracting 3 values...")
-    first.ingest(numeric_list)
-    for _ in range(3):
-        rank, value = first.output()
-        print(f"Numeric value {rank}: {value}")
-    second = TextProcessor()
-    print("\nTesting Text Processor...")
-    second.ingest(text_list)
-    print(f"Trying to validate input: {second.validate(42)}")
-    print(f"Processing data: {text_list}")
-    print("Extracting 1 value...")
-    for _ in range(1):
-        rank, value = second.output()
-        print(f"Text value {rank}: {value}")
-    third = LogProcessor()
-    print("\nTesting Log Processor...")
-    third.ingest(processing_data)
-    print(f"Trying to validate input {'hello'}: {third.validate('hello')}")
-    print("Extracting 2 values...")
-    for _ in range(2):
-        rank, value = third.output()
-        print(f"Log entry {rank}: {value}")
+    print("=== Code Nexus - Data Stream ===")
+    first = DataStream()
+    first.register_processor(['Hello world', [3.14, -1,2.71], [{'log_level': 'WARNING', 'log_message': 'Telnet access!Use ssh instead'}, {'log_level': 'INFO', 'log_message': 'User wilis connected'}], 42, ['Hi', 'five']])
+    first.process_stream(first.processors)
